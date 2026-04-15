@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riesgos y Controles de Seguridad – SaaS, PaaS, IaaS</title>
+<style>
+  @font-face {
+    font-family: 'Geomanist';
+    src: local('Geomanist Regular'), local('Geomanist');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #E2B13C;
+    --navy: #00264A;
+    --bg: #FEFEFE;
+    --text: #00264A;
+    --text-light: #1a3a5c;
+    --risk-bg: rgba(220, 53, 69, 0.06);
+    --risk-border: rgba(220, 53, 69, 0.22);
+    --risk-accent: #dc3545;
+    --risk-header: rgba(220, 53, 69, 0.09);
+    --control-bg: rgba(40, 167, 69, 0.06);
+    --control-border: rgba(40, 167, 69, 0.22);
+    --control-accent: #28a745;
+    --control-header: rgba(40, 167, 69, 0.09);
+    --radius: 12px;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Geomanist', Verdana, Geneva, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 1920px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 58px 40px 44px;
+    background: var(--navy);
+    color: #fff;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--gold);
+  }
+  .hero h1 {
+    font-size: clamp(1.7rem, 3.8vw, 3rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero p {
+    font-size: clamp(0.92rem, 1.3vw, 1.1rem);
+    max-width: 780px;
+    margin: 0 auto 36px;
+    opacity: 0.75;
+  }
+
+  .nav-anchors {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 26px;
+    border-radius: 50px;
+    border: 2px solid var(--gold);
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .nav-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(226,177,60,0.35);
+  }
+  .nav-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ── SECTION ── */
+  .section {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 50px 40px 60px;
+    scroll-margin-top: 20px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid var(--gold);
+    flex-wrap: wrap;
+  }
+  .section-icon-box {
+    width: 56px; height: 56px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-icon-box svg { width: 30px; height: 30px; }
+  .section-header h2 {
+    font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .section-header h2 span { color: var(--gold); }
+  .section-header .tag {
+    background: rgba(226,177,60,0.13);
+    color: #b8860b;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 13px;
+    border-radius: 20px;
+  }
+
+  .toggle-all-wrap { text-align: center; margin-bottom: 28px; }
+  .toggle-all {
+    background: var(--navy);
+    border: none;
+    color: var(--gold);
+    padding: 10px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+  .toggle-all:hover { background: var(--gold); color: var(--navy); }
+
+  /* ── TWO COLUMNS ── */
+  .columns-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .column { display: flex; flex-direction: column; }
+
+  .column-header {
+    text-align: center;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid rgba(0,0,0,0.06);
+  }
+  .column-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .risk-col .column-header h3 { color: var(--risk-accent); }
+  .control-col .column-header h3 { color: var(--control-accent); }
+
+  .column-icons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  .column-icons svg { width: 40px; height: 40px; }
+
+  /* ── CARDS ── */
+  .card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    margin-bottom: 14px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: var(--transition);
+  }
+  .card-header:hover { filter: brightness(0.97); }
+  .card-header .indicator {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+  .card-header h4 {
+    font-size: clamp(0.85rem, 1.15vw, 0.96rem);
+    font-weight: 700;
+    flex: 1;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .card-header .chevron {
+    width: 22px; height: 22px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    opacity: 0.45;
+  }
+  .card.open .card-header .chevron { transform: rotate(180deg); opacity: 0.7; }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+    padding: 0 20px;
+  }
+  .card.open .card-body { max-height: 500px; padding: 0 20px 20px; }
+  .card-body p {
+    font-size: clamp(0.85rem, 1.05vw, 0.94rem);
+    color: var(--text-light);
+    line-height: 1.75;
+  }
+
+  .card.risk { background: var(--risk-bg); border: 1px solid var(--risk-border); }
+  .card.risk .card-header { background: var(--risk-header); }
+  .card.risk .indicator { background: rgba(220,53,69,0.15); color: var(--risk-accent); }
+  .card.risk:hover { border-color: rgba(220,53,69,0.45); box-shadow: 0 3px 14px rgba(220,53,69,0.08); }
+
+  .card.control { background: var(--control-bg); border: 1px solid var(--control-border); }
+  .card.control .card-header { background: var(--control-header); }
+  .card.control .indicator { background: rgba(40,167,69,0.15); color: var(--control-accent); }
+  .card.control:hover { border-color: rgba(40,167,69,0.45); box-shadow: 0 3px 14px rgba(40,167,69,0.08); }
+
+  .section-divider {
+    max-width: 1920px;
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.35;
+  }
+
+  .footer {
+    max-width: 1920px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 36px 40px;
+    font-size: 0.78rem;
+    opacity: 0.4;
+    border-top: 1px solid rgba(0,38,74,0.1);
+  }
+
+  .back-top {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 46px; height: 46px;
+    background: var(--gold);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(226,177,60,0.4);
+  }
+  .back-top.visible { opacity: 1; visibility: visible; }
+  .back-top:hover { transform: scale(1.1); }
+  .back-top svg { width: 22px; height: 22px; }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .columns-wrapper { grid-template-columns: 1fr; gap: 40px; }
+    .section { padding: 36px 20px 48px; }
+    .hero { padding: 44px 20px 36px; }
+  }
+  @media (max-width: 600px) {
+    .nav-anchors { flex-direction: column; align-items: center; }
+    .nav-btn { width: 100%; max-width: 280px; justify-content: center; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .card-header { padding: 14px 16px; }
+    .card.open .card-body { padding: 0 16px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <h1>Riesgos y <span>Controles de Seguridad</span><br>en Modelos Cloud</h1>
+  <p>Infografía interactiva orientada a estudiantes universitarios y de posgrado en tecnología, auditoría, seguridad de la información y gobernanza de TI.</p>
+  <nav class="nav-anchors">
+    <a href="#saas" class="nav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      SaaS
+    </a>
+    <a href="#paas" class="nav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+      PaaS
+    </a>
+    <a href="#iaas" class="nav-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+      IaaS
+    </a>
+  </nav>
+</header>
+
+<!-- ══════════════ SaaS ══════════════ -->
+<section class="section" id="saas">
+  <div class="section-header fade-up">
+    <div class="section-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00264A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    </div>
+    <h2>SaaS – <span>Software as a Service</span></h2>
+    <span class="tag">Modelo de Servicio</span>
+  </div>
+  <div class="toggle-all-wrap fade-up">
+    <button class="toggle-all" onclick="toggleSection('saas')">Expandir / Colapsar todo</button>
+  </div>
+  <div class="columns-wrapper fade-up">
+    <div class="column risk-col">
+      <div class="column-header">
+        <h3>Riesgos</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="20" r="13" stroke="#dc3545" stroke-width="2.5"/><line x1="29" y1="29" x2="42" y2="42" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 6L4 42h40L24 6z" stroke="#dc3545" stroke-width="2.5" stroke-linejoin="round" fill="rgba(220,53,69,0.08)"/><line x1="24" y1="19" x2="24" y2="30" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="36" r="2" fill="#dc3545"/></svg>
+        </div>
+      </div>
+      <div class="card risk" data-section="saas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 1: Cuentas compartidas sin autenticación multifactorial (MFA)</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Compartir credenciales entre empleados puede permitir accesos no autorizados a datos sensibles. Si un atacante obtiene una contraseña, puede ingresar sin detección. Esto representa un incumplimiento con normas de seguridad como ISO 27001 y expone la información del cliente.</p></div>
+      </div>
+      <div class="card risk" data-section="saas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 2: Falta de registro y monitoreo de actividades (logging)</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Sin registros de auditoría, las acciones sospechosas pasan inadvertidas. Esto impide detectar fraudes, accesos indebidos o errores operativos. La ausencia de logs debilita la evidencia de control exigida por marcos como SOC 2.</p></div>
+      </div>
+    </div>
+    <div class="column control-col">
+      <div class="column-header">
+        <h3>Controles</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="26" rx="4" stroke="#28a745" stroke-width="2.5" fill="rgba(40,167,69,0.06)"/><path d="M16 16V11a8 8 0 0116 0v5" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="29" r="3.5" stroke="#28a745" stroke-width="2.5"/><line x1="24" y1="32.5" x2="24" y2="36" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="card control" data-section="saas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 1: Implementar MFA y control de accesos por roles (RBAC)</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>El uso de MFA agrega una segunda capa de seguridad, reduciendo el riesgo de accesos indebidos. RBAC garantiza que cada usuario solo pueda realizar las acciones necesarias según su función. Este control mejora la trazabilidad y protege la confidencialidad de los datos.</p></div>
+      </div>
+      <div class="card control" data-section="saas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 2: Configurar auditorías de logs y alertas automáticas</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>La activación de registros detallados de acceso, cambios y errores permite monitorear comportamientos anómalos. Las alertas automáticas informan al auditor o al área de seguridad ante desviaciones inusuales. Con ello, se mejora la capacidad de respuesta ante incidentes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════ PaaS ══════════════ -->
+<section class="section" id="paas">
+  <div class="section-header fade-up">
+    <div class="section-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00264A" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+    </div>
+    <h2>PaaS – <span>Platform as a Service</span></h2>
+    <span class="tag">Modelo de Servicio</span>
+  </div>
+  <div class="toggle-all-wrap fade-up">
+    <button class="toggle-all" onclick="toggleSection('paas')">Expandir / Colapsar todo</button>
+  </div>
+  <div class="columns-wrapper fade-up">
+    <div class="column risk-col">
+      <div class="column-header">
+        <h3>Riesgos</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="20" r="13" stroke="#dc3545" stroke-width="2.5"/><line x1="29" y1="29" x2="42" y2="42" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 6L4 42h40L24 6z" stroke="#dc3545" stroke-width="2.5" stroke-linejoin="round" fill="rgba(220,53,69,0.08)"/><line x1="24" y1="19" x2="24" y2="30" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="36" r="2" fill="#dc3545"/></svg>
+        </div>
+      </div>
+      <div class="card risk" data-section="paas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 1: Falta de pruebas de seguridad en el código (vulnerabilidades OWASP)</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Las aplicaciones desarrolladas sin pruebas de seguridad pueden incluir fallas críticas. Esto abre la puerta a ataques de inyección, escalamiento de privilegios o robo de datos. Muchas brechas en la nube comienzan por software mal probado.</p></div>
+      </div>
+      <div class="card risk" data-section="paas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 2: Dependencia excesiva del proveedor sin revisión de controles</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Confiar totalmente en la seguridad del proveedor puede generar puntos ciegos. Si el proveedor no cumple estándares, el cliente sigue siendo responsable del impacto. Esta falta de auditoría compartida afecta el cumplimiento con NIST o COBIT.</p></div>
+      </div>
+    </div>
+    <div class="column control-col">
+      <div class="column-header">
+        <h3>Controles</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="26" rx="4" stroke="#28a745" stroke-width="2.5" fill="rgba(40,167,69,0.06)"/><path d="M16 16V11a8 8 0 0116 0v5" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="29" r="3.5" stroke="#28a745" stroke-width="2.5"/><line x1="24" y1="32.5" x2="24" y2="36" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="card control" data-section="paas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 1: Aplicar pruebas OWASP y escaneo continuo SAST/DAST</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>El análisis estático y dinámico de código detecta vulnerabilidades antes del despliegue. OWASP guía a los desarrolladores para mitigar los riesgos más comunes. Estas pruebas deben integrarse en el ciclo de desarrollo (DevSecOps).</p></div>
+      </div>
+      <div class="card control" data-section="paas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 2: Solicitar auditorías SOC 2 y revisiones periódicas del proveedor</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Revisar los informes SOC 2 permite evaluar la madurez de los controles del proveedor. Las auditorías conjuntas refuerzan la transparencia y la gestión de riesgos compartida. Este control fortalece la gobernanza de TI bajo COBIT DSS05.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════ IaaS ══════════════ -->
+<section class="section" id="iaas">
+  <div class="section-header fade-up">
+    <div class="section-icon-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00264A" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1.5" fill="#00264A"/><circle cx="6" cy="18" r="1.5" fill="#00264A"/></svg>
+    </div>
+    <h2>IaaS – <span>Infrastructure as a Service</span></h2>
+    <span class="tag">Modelo de Servicio</span>
+  </div>
+  <div class="toggle-all-wrap fade-up">
+    <button class="toggle-all" onclick="toggleSection('iaas')">Expandir / Colapsar todo</button>
+  </div>
+  <div class="columns-wrapper fade-up">
+    <div class="column risk-col">
+      <div class="column-header">
+        <h3>Riesgos</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="20" r="13" stroke="#dc3545" stroke-width="2.5"/><line x1="29" y1="29" x2="42" y2="42" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 6L4 42h40L24 6z" stroke="#dc3545" stroke-width="2.5" stroke-linejoin="round" fill="rgba(220,53,69,0.08)"/><line x1="24" y1="19" x2="24" y2="30" stroke="#dc3545" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="36" r="2" fill="#dc3545"/></svg>
+        </div>
+      </div>
+      <div class="card risk" data-section="iaas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 1: Configuraciones de red sin segmentación o con acceso público</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Una red mal segmentada permite que un atacante acceda a recursos internos fácilmente. Muchas brechas provienen de servidores expuestos por error. La falta de separación entre entornos productivos y de prueba incrementa la vulnerabilidad.</p></div>
+      </div>
+      <div class="card risk" data-section="iaas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">⚠</div>
+          <h4>Riesgo 2: Copias de respaldo no cifradas ni verificadas</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>Los respaldos sin cifrar pueden ser robados o modificados, lo que compromete la integridad de la información. La falta de pruebas de restauración impide garantizar su disponibilidad. En un incidente, la empresa puede perder datos críticos o incumplir leyes de privacidad.</p></div>
+      </div>
+    </div>
+    <div class="column control-col">
+      <div class="column-header">
+        <h3>Controles</h3>
+        <div class="column-icons">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="16" width="32" height="26" rx="4" stroke="#28a745" stroke-width="2.5" fill="rgba(40,167,69,0.06)"/><path d="M16 16V11a8 8 0 0116 0v5" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="29" r="3.5" stroke="#28a745" stroke-width="2.5"/><line x1="24" y1="32.5" x2="24" y2="36" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+      <div class="card control" data-section="iaas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 1: Implementar redes privadas virtuales (VPC) y firewalls segmentados</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>La segmentación reduce el impacto de una intrusión, confinando el ataque a una zona específica. Las VPC y reglas de firewall permiten controlar el tráfico entre subredes. Este control cumple con los lineamientos de ISO 27017 y NIST SP 800-125.</p></div>
+      </div>
+      <div class="card control" data-section="iaas">
+        <div class="card-header" onclick="toggleCard(this)">
+          <div class="indicator">✓</div>
+          <h4>Control 2: Cifrar backup y validar restauraciones trimestrales</h4>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="card-body"><p>El cifrado protege la información ante accesos no autorizados, incluso fuera de la nube. Las pruebas periódicas de restauración garantizan la confiabilidad del proceso de respaldo. Este control está alineado con ISO 27001 A.12.3 y SOC 2 CC6.6.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  Infografía interactiva con fines académicos · Seguridad en la Nube · SaaS · PaaS · IaaS
+</footer>
+
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#00264A" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+  function toggleCard(h){h.parentElement.classList.toggle('open')}
+  function toggleSection(id){
+    const c=document.querySelectorAll(`.card[data-section="${id}"]`);
+    const all=Array.from(c).every(x=>x.classList.contains('open'));
+    c.forEach(x=>{all?x.classList.remove('open'):x.classList.add('open')});
+  }
+  window.addEventListener('scroll',()=>{document.getElementById('backTop').classList.toggle('visible',window.scrollY>400)});
+  const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
